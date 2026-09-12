@@ -1,25 +1,31 @@
-const http = require('http');
+const http = require('http'); const EventEmitter = require('events'); const logger = require('./logger');
+class AppServer extends EventEmitter { constructor() { super(); this.server = null; }
 
+JavaScript
+start(port) {
+    this.server = http.createServer((req, res) => {
+        this.emit('request:received', { url: req.url, method: req.method });
+        res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.end('Hello from Event-Driven Server!');
+    });
 
-function calculatePi(digits) {
-    let pi = 0;
-    for (let k = 0; k < 1000000; k++) {
-        pi += (k % 2 === 0 ? 1 : -1) / (2 * k + 1);
-    }
-    pi *= 4;
-    return pi.toFixed(digits); // digits - ваш номер журнала (2)
+    this.server.listen(port, () => {
+        this.emit('server:started', port);
+    });
 }
 
-const fio = "Булыга Александра Витальевна";
-const group = "477";
-const journalNumber = 2; 
-
-const server = http.createServer((req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-   
-    res.end(`<h1>${fio}</h1><p>Группа: ${group}</p><p>Число Пи (${journalNumber} знака): ${calculatePi(journalNumber)}</p>`);
-});
-
-server.listen(3000, () => {
-    console.log('Сервер запущен на порту 3000');
-});
+stop() {
+    if (this.server) {
+        this.server.close(() => {
+            this.emit('server:stopped');
+        });
+    }
+}
+}
+const app = new AppServer();
+logger.setupLogger(app);
+app.on('server:started', (port) => { console.log('Сервер запущен на порту'+ port); });
+app.on('request:received', (data) => { console.log('Получен запрос:' + data.method +''+ data.url); });
+app.on('server:stopped', () => { console.log('Сервер остановлен'); });
+app.start(3000);
+setTimeout(() => { app.stop(); }, 10000);
