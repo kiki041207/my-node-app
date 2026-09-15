@@ -1,5 +1,5 @@
 AppData/
 node_modules/
-logs.txt *.log
+
 .DS_Store
 .env
