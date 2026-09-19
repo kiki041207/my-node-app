@@ -1,3 +1,15 @@
+async function main() {
+    try {
+await fs.rm(path.join(__dirname, projectDir), { recursive: true, force: true });
+const structure = [
+            ['src', 'Исходный код'],
+            // ... остальные строки
+        ];
+        // ... остальной код
+    } catch (err) {
+        console.error('Ошибка: ' + err.message);
+    }
+}
 const fs = require('fs').promises;
 const path = require('path');
 
