@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/kiki041207/my-node-app/issues"
   },
-  "homepage": "https://github.com/kiki041207/my-node-app#readme"
+  "homepage": "https://github.com/kiki041207/my-node-app#readme",
+  "dependencies": {
+    "koa": "^3.2.1",
+    "koa-bodyparser": "^4.4.1",
+    "koa-router": "^14.0.0"
+  }
 }
