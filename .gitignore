@@ -11,3 +11,9 @@ logs.txt
 student_*.txt
 project_*/
 report_*.json
+stream-lab/*.txt
+stream-lab/*.csv
+stream-lab/*.log
+http-lab/big-file.txt
+http-lab/public/
+http-lab/access.log
