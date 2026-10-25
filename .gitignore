@@ -11,3 +11,5 @@ logs.txt
 student_*.txt
 project_*/
 report_*.json
+mongodb-lab/.env
+mongodb-lab/node_modules/
