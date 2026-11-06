@@ -1,5 +1,6 @@
 
 node_modules/
+cli-app/node_modules/
 .git/
 
 logs.txt
