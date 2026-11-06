@@ -2,7 +2,7 @@
 node_modules/
 cli-app/node_modules/
 .git/
-
+os-lab/monitor.log
 logs.txt
 *.log
 
