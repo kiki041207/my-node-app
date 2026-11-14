@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/kiki041207/my-node-app/issues"
   },
-  "homepage": "https://github.com/kiki041207/my-node-app#readme"
+  "homepage": "https://github.com/kiki041207/my-node-app#readme",
+  "dependencies": {
+    "compression": "^1.8.2",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1"
+  }
 }
