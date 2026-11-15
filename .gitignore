@@ -21,3 +21,6 @@ rest-api-lab/.env
 
 mysql-lab/.env
 mysql-lab/node_modules/
+
+mongodb-lab/.env
+mongodb-lab/node_modules/
