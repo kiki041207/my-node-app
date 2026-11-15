@@ -1,53 +1,49 @@
 const http = require('http');
-const querystring = require('querystring');
+const qs = require('querystring');
 
-<<<<<<< HEAD
-const MAX_BODY = 1024 * 1024;
-=======
-const MAX_BODY = 1024 * 1024; // 1 MB
->>>>>>> origin/main
+const LIMIT = 1048576;
 
 function readBody(req) {
     return new Promise((resolve, reject) => {
-        let body = '';
+        let data = '';
         let size = 0;
-        req.on('data', chunk => {
-            size += chunk.length;
-            if (size > MAX_BODY) {
+        req.on('data', c => {
+            size += c.length;
+            if (size > LIMIT) {
                 reject(new Error('413'));
                 req.destroy();
                 return;
             }
-            body += chunk.toString();
+            data += c.toString();
         });
-        req.on('end', () => resolve(body));
-        req.on('error', err => reject(err));
+        req.on('end', () => resolve(data));
+        req.on('error', e => reject(e));
     });
 }
 
-const server = http.createServer(async (req, res) => {
+const srv = http.createServer(async (req, res) => {
     if (req.method === 'POST' && req.url === '/echo') {
         try {
             const body = await readBody(req);
-            const contentType = req.headers['content-type'] || '';
+            const ct = req.headers['content-type'] || '';
             console.log('Размер тела: ' + Buffer.byteLength(body) + ' байт');
 
-            if (contentType.includes('application/json')) {
+            if (ct.includes('application/json')) {
                 try {
-                    const data = JSON.parse(body);
-                    data.group = '477';
+                    const obj = JSON.parse(body);
+                    obj.group = '477';
                     res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-                    res.end(JSON.stringify(data, null, 2));
+                    res.end(JSON.stringify(obj, null, 2));
                 } catch (e) {
                     res.writeHead(400);
                     res.end('Invalid JSON');
                 }
             } else {
-                res.writeHead(200, { 'Content-Type': contentType || 'text/plain; charset=utf-8' });
+                res.writeHead(200, { 'Content-Type': ct || 'text/plain; charset=utf-8' });
                 res.end(body);
             }
-        } catch (err) {
-            if (err.message === '413') {
+        } catch (e) {
+            if (e.message === '413') {
                 res.writeHead(413, { 'Content-Type': 'text/plain; charset=utf-8' });
                 res.end('413 Payload Too Large');
             } else {
@@ -58,9 +54,9 @@ const server = http.createServer(async (req, res) => {
     } else if (req.method === 'POST' && req.url === '/form') {
         try {
             const body = await readBody(req);
-            const data = querystring.parse(body);
+            const obj = qs.parse(body);
             res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
-            res.end(JSON.stringify(data, null, 2));
+            res.end(JSON.stringify(obj, null, 2));
         } catch (e) {
             res.writeHead(413);
             res.end('413 Payload Too Large');
@@ -71,6 +67,4 @@ const server = http.createServer(async (req, res) => {
     }
 });
 
-server.listen(3000, () => {
-    console.log('Сервер запущен на порту 3000');
-});
+srv.listen(3000, () => console.log('Сервер на порту 3000'));
