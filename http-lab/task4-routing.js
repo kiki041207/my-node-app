@@ -30,6 +30,10 @@ const server = http.createServer((req, res) => {
         }
         sendJSON(res, 200, result);
         logRequest(method, req.url, 200);
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
     } else if (method === 'GET' && path.match(/^\/api\/students\/\d+$/)) {
         const id = Number(path.split('/')[3]);
         const student = students.find(s => s.id === id);
@@ -40,6 +44,10 @@ const server = http.createServer((req, res) => {
             sendJSON(res, 200, student);
             logRequest(method, req.url, 200);
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
     } else if (method === 'POST' && path === '/api/students') {
         let body = '';
         req.on('data', chunk => body += chunk);
@@ -55,6 +63,10 @@ const server = http.createServer((req, res) => {
                 logRequest(method, req.url, 400);
             }
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
     } else if (method === 'PUT' && path.match(/^\/api\/students\/\d+$/)) {
         const id = Number(path.split('/')[3]);
         let body = '';
@@ -76,6 +88,10 @@ const server = http.createServer((req, res) => {
                 logRequest(method, req.url, 400);
             }
         });
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
     } else if (method === 'DELETE' && path.match(/^\/api\/students\/\d+$/)) {
         const id = Number(path.split('/')[3]);
         const index = students.findIndex(s => s.id === id);
@@ -87,6 +103,10 @@ const server = http.createServer((req, res) => {
             sendJSON(res, 200, { deleted: true, id: id });
             logRequest(method, req.url, 200);
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
     } else {
         sendJSON(res, 405, { error: 'Method Not Allowed' });
         logRequest(method, req.url, 405);

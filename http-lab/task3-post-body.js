@@ -1,7 +1,11 @@
 const http = require('http');
 const querystring = require('querystring');
 
+<<<<<<< HEAD
 const MAX_BODY = 1024 * 1024;
+=======
+const MAX_BODY = 1024 * 1024; // 1 MB
+>>>>>>> origin/main
 
 function readBody(req) {
     return new Promise((resolve, reject) => {

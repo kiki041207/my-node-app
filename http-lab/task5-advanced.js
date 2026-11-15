@@ -3,8 +3,18 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
+<<<<<<< HEAD
 const middlewares = [];
 function use(fn) { middlewares.push(fn); }
+=======
+
+const middlewares = [];
+
+function use(fn) {
+    middlewares.push(fn);
+}
+
+>>>>>>> origin/main
 
 const PUBLIC_DIR = path.join(__dirname, 'public');
 if (!fs.existsSync(PUBLIC_DIR)) {
@@ -26,6 +36,10 @@ function logAccess(method, url, status) {
     fs.appendFileSync('access.log', '[' + now + '] [' + metrics.group + '] ' + method + ' ' + url + ' ' + status + '\n');
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
 use((req, res, next) => {
     metrics.total++;
     metrics.byMethod[req.method] = (metrics.byMethod[req.method] || 0) + 1;
@@ -43,14 +57,31 @@ use((req, res, next) => {
 
 const server = http.createServer((req, res) => {
     let index = 0;
+<<<<<<< HEAD
     function next() {
         if (index < middlewares.length) {
             const mw = middlewares[index++];
             try { mw(req, res, next); } catch (e) { res.writeHead(500); res.end('Server Error'); }
+=======
+
+    function next() {
+        if (index < middlewares.length) {
+            const mw = middlewares[index++];
+            try {
+                mw(req, res, next);
+            } catch (e) {
+                res.writeHead(500);
+                res.end('Server Error');
+            }
+>>>>>>> origin/main
         } else {
             handleRequest(req, res);
         }
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
     next();
 });
 
@@ -58,6 +89,10 @@ function handleRequest(req, res) {
     const parsed = url.parse(req.url, true);
     const pathname = parsed.pathname;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
     if (pathname === '/metrics') {
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify({
@@ -70,19 +105,36 @@ function handleRequest(req, res) {
         return;
     }
 
+<<<<<<< HEAD
     if (req.url.startsWith('/static/')) {
+=======
+
+    if (req.url.startsWith('/static/')) {
+       
+>>>>>>> origin/main
         if (req.url.includes('..') || req.url.includes('%2e') || req.url.includes('%2E')) {
             res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
             res.end('403 Forbidden');
             return;
         }
+<<<<<<< HEAD
         let filePath = pathname.replace('/static/', '');
         const fullPath = path.join(PUBLIC_DIR, filePath);
+=======
+
+        let filePath = pathname.replace('/static/', '');
+        const fullPath = path.join(PUBLIC_DIR, filePath);
+        
+>>>>>>> origin/main
         if (!fs.existsSync(fullPath)) {
             res.writeHead(404);
             res.end('Not Found');
             return;
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
         const ext = path.extname(fullPath);
         const mime = ext === '.html' ? 'text/html' : ext === '.css' ? 'text/css' : 'text/plain';
         res.writeHead(200, { 'Content-Type': mime + '; charset=utf-8', 'Cache-Control': 'max-age=60' });
@@ -90,6 +142,10 @@ function handleRequest(req, res) {
         return;
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
     if (pathname === '/stream') {
         const bigFile = path.join(__dirname, 'big-file.txt');
         if (!fs.existsSync(bigFile)) {
