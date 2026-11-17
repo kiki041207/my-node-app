@@ -7,97 +7,77 @@ let students = [
 ];
 let nextId = 3;
 
-function logRequest(method, path, status) {
-    const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    console.log('[' + now + '] [477] ' + method + ' ' + path + ' ' + status);
+function log(method, path, code) {
+    const t = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    console.log(`[${t}] [477] ${method} ${path} ${code}`);
 }
 
-function sendJSON(res, status, data) {
-    res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
+function send(res, code, data) {
+    res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify(data, null, 2));
 }
 
-const server = http.createServer((req, res) => {
-    const parsed = url.parse(req.url, true);
-    const path = parsed.pathname;
-    const query = parsed.query;
-    const method = req.method;
+const srv = http.createServer((req, res) => {
+    const u = url.parse(req.url, true);
+    const p = u.pathname;
+    const q = u.query;
+    const m = req.method;
 
-    if (method === 'GET' && path === '/api/students') {
+    if (m === 'GET' && p === '/api/students') {
         let result = students;
-        if (query.group) {
-            result = students.filter(s => s.group === query.group);
-        }
-        sendJSON(res, 200, result);
-        logRequest(method, req.url, 200);
-
-    } else if (method === 'GET' && path.match(/^\/api\/students\/\d+$/)) {
-        const id = Number(path.split('/')[3]);
-        const student = students.find(s => s.id === id);
-        if (!student) {
-            sendJSON(res, 404, { error: 'Not found' });
-            logRequest(method, req.url, 404);
-        } else {
-            sendJSON(res, 200, student);
-            logRequest(method, req.url, 200);
-        }
-
-    } else if (method === 'POST' && path === '/api/students') {
+        if (q.group) result = students.filter(s => s.group === q.group);
+        send(res, 200, result);
+        log(m, req.url, 200);
+    } else if (m === 'GET' && /^\/api\/students\/\d+$/.test(p)) {
+        const id = Number(p.split('/')[3]);
+        const s = students.find(x => x.id === id);
+        if (!s) { send(res, 404, { error: 'Not found' }); log(m, req.url, 404); }
+        else { send(res, 200, s); log(m, req.url, 200); }
+    } else if (m === 'POST' && p === '/api/students') {
         let body = '';
-        req.on('data', chunk => body += chunk);
+        req.on('data', c => body += c);
         req.on('end', () => {
             try {
-                const data = JSON.parse(body);
-                const student = { id: nextId++, name: data.name, group: data.group || '477' };
-                students.push(student);
-                sendJSON(res, 201, student);
-                logRequest(method, req.url, 201);
+                const d = JSON.parse(body);
+                const s = { id: nextId++, name: d.name, group: d.group || '477' };
+                students.push(s);
+                send(res, 201, s);
+                log(m, req.url, 201);
             } catch (e) {
-                sendJSON(res, 400, { error: 'Invalid JSON' });
-                logRequest(method, req.url, 400);
+                send(res, 400, { error: 'Bad JSON' });
+                log(m, req.url, 400);
             }
         });
-
-    } else if (method === 'PUT' && path.match(/^\/api\/students\/\d+$/)) {
-        const id = Number(path.split('/')[3]);
+    } else if (m === 'PUT' && /^\/api\/students\/\d+$/.test(p)) {
+        const id = Number(p.split('/')[3]);
         let body = '';
-        req.on('data', chunk => body += chunk);
+        req.on('data', c => body += c);
         req.on('end', () => {
-            const student = students.find(s => s.id === id);
-            if (!student) {
-                sendJSON(res, 404, { error: 'Not found' });
-                logRequest(method, req.url, 404);
-                return;
-            }
+            const s = students.find(x => x.id === id);
+            if (!s) { send(res, 404, { error: 'Not found' }); log(m, req.url, 404); return; }
             try {
-                const data = JSON.parse(body);
-                if (data.name) student.name = data.name;
-                sendJSON(res, 200, student);
-                logRequest(method, req.url, 200);
+                const d = JSON.parse(body);
+                if (d.name) s.name = d.name;
+                send(res, 200, s);
+                log(m, req.url, 200);
             } catch (e) {
-                sendJSON(res, 400, { error: 'Invalid JSON' });
-                logRequest(method, req.url, 400);
+                send(res, 400, { error: 'Bad JSON' });
+                log(m, req.url, 400);
             }
         });
-
-    } else if (method === 'DELETE' && path.match(/^\/api\/students\/\d+$/)) {
-        const id = Number(path.split('/')[3]);
-        const index = students.findIndex(s => s.id === id);
-        if (index === -1) {
-            sendJSON(res, 404, { error: 'Not found' });
-            logRequest(method, req.url, 404);
-        } else {
-            students.splice(index, 1);
-            sendJSON(res, 200, { deleted: true, id: id });
-            logRequest(method, req.url, 200);
+    } else if (m === 'DELETE' && /^\/api\/students\/\d+$/.test(p)) {
+        const id = Number(p.split('/')[3]);
+        const idx = students.findIndex(x => x.id === id);
+        if (idx === -1) { send(res, 404, { error: 'Not found' }); log(m, req.url, 404); }
+        else {
+            students.splice(idx, 1);
+            send(res, 200, { deleted: true, id });
+            log(m, req.url, 200);
         }
-
     } else {
-        sendJSON(res, 405, { error: 'Method Not Allowed' });
-        logRequest(method, req.url, 405);
+        send(res, 405, { error: 'Method Not Allowed' });
+        log(m, req.url, 405);
     }
 });
 
-server.listen(3000, () => {
-    console.log('Сервер запущен на порту 3000');
-});
+srv.listen(3000, () => console.log('Сервер на порту 3000'));
