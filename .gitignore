@@ -17,6 +17,9 @@ stream-lab/*.log
 cli-app/node_modules/
 
 rest-api-lab/node_modules/
+feature/mongodb-lab
+rest-api-lab/.env
+
 rest-api-lab/.env
 
 mysql-lab/.env
@@ -24,3 +27,4 @@ mysql-lab/node_modules/
 
 mongodb-lab/.env
 mongodb-lab/node_modules/
+ main
