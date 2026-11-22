@@ -17,7 +17,11 @@ stream-lab/*.log
 cli-app/node_modules/
 
 rest-api-lab/node_modules/
+ feature/rest-api-lab
 feature/rest-api-lab
+
+feature/mongodb-lab
+ main
 rest-api-lab/.env
 
 rest-api-lab/.env
